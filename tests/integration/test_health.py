@@ -4,6 +4,7 @@ import httpx
 # Update this URL based on your deployment environment
 BASE_URL = "http://localhost:8000"
 
+
 @pytest.mark.asyncio
 async def test_health_check_integration():
     """

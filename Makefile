@@ -1,4 +1,4 @@
-.PHONY: build run test-unit test-integration clean
+.PHONY: build run test-unit test-integration clean format format-check
 
 # Variables
 APP_NAME = fastapi-template
@@ -27,6 +27,14 @@ test-unit: build-test
 test-integration: build-test
 	docker run --rm --network host $(TEST_IMAGE) pytest tests/integration -v
 
+# Format code using ruff
+format:
+	docker run --rm -v $(PWD):/app $(TEST_IMAGE) ruff format .
+
+# Check code formatting without making changes
+format-check:
+	docker run --rm -v $(PWD):/app $(TEST_IMAGE) ruff format --check .
+
 # Clean up containers and images
 clean:
 	-docker stop $(APP_NAME)-app 2>/dev/null || true
@@ -40,5 +48,7 @@ help:
 	@echo "  run             - Run the application locally in a container"
 	@echo "  test-unit       - Run unit tests in a container"
 	@echo "  test-integration - Run integration tests in a container"
+	@echo "  format          - Format code using ruff"
+	@echo "  format-check    - Check code formatting without making changes"
 	@echo "  clean           - Remove containers and images"
 	@echo "  help            - Show this help message"

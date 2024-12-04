@@ -77,6 +77,20 @@ make clean
 make help
 ```
 
+## Code Formatting
+
+This project uses `ruff` for code formatting, following the Black code style. To format your code:
+
+```bash
+# Format all Python files
+make format
+
+# Check formatting without making changes
+make format-check
+```
+
+The formatting rules are configured in `ruff.toml` and follow the Black code style guidelines.
+
 ## Docker Support
 
 ### Building the Docker Image
