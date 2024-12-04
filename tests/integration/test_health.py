@@ -1,5 +1,5 @@
-import pytest
 import httpx
+import pytest
 
 # Update this URL based on your deployment environment
 BASE_URL = "http://localhost:8000"
