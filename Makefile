@@ -1,4 +1,4 @@
-.PHONY: build run test-unit test-integration clean format format-check
+.PHONY: build run test-unit test-integration clean format format-check db-migrate db-upgrade
 
 # Variables
 APP_NAME = fastapi-template
@@ -29,11 +29,20 @@ test-integration: build-test
 
 # Format code using ruff
 format:
+	docker run --rm -v $(PWD):/app $(TEST_IMAGE) ruff check --select I --fix .
 	docker run --rm -v $(PWD):/app $(TEST_IMAGE) ruff format .
 
 # Check code formatting without making changes
 format-check:
 	docker run --rm -v $(PWD):/app $(TEST_IMAGE) ruff format --check .
+
+# Database migrations
+db-new-migration:
+	docker run --rm -v $(PWD):/app $(TEST_IMAGE) alembic revision --autogenerate -m "$(message)"
+
+# Apply database migrations
+db-upgrade:
+	docker run --rm -v $(PWD):/app $(TEST_IMAGE) alembic upgrade head
 
 # Clean up containers and images
 clean:
@@ -44,11 +53,13 @@ clean:
 # Help target
 help:
 	@echo "Available targets:"
-	@echo "  build            - Build the main application Docker image"
-	@echo "  run             - Run the application locally in a container"
-	@echo "  test-unit       - Run unit tests in a container"
-	@echo "  test-integration - Run integration tests in a container"
-	@echo "  format          - Format code using ruff"
-	@echo "  format-check    - Check code formatting without making changes"
-	@echo "  clean           - Remove containers and images"
-	@echo "  help            - Show this help message"
+	@echo "  build            	- Build the main application Docker image"
+	@echo "  run             	- Run the application locally in a container"
+	@echo "  test-unit       	- Run unit tests in a container"
+	@echo "  test-integration 	- Run integration tests in a container"
+	@echo "  format          	- Format code using ruff"
+	@echo "  format-check    	- Check code formatting without making changes"
+	@echo "  db-new-migration   - Create a new database migration (use with message='Migration message')"
+	@echo "  db-upgrade      	- Apply all pending database migrations"
+	@echo "  clean           	- Remove containers and images"
+	@echo "  help            	- Show this help message"

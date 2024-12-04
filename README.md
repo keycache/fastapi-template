@@ -91,6 +91,32 @@ make format-check
 
 The formatting rules are configured in `ruff.toml` and follow the Black code style guidelines.
 
+## Database Management
+
+This project uses SQLAlchemy with SQLite as the database and Alembic for migrations.
+
+### Creating Migrations
+
+To create a new migration after modifying models:
+
+```bash
+make db-new-migration message="Your migration message"
+```
+
+### Applying Migrations
+
+To apply all pending migrations:
+
+```bash
+make db-upgrade
+```
+
+### Database Structure
+
+The database uses SQLite and is stored in `sql_app.db`. Current models include:
+
+- `User`: Basic user model with email and timestamp fields
+
 ## Docker Support
 
 ### Building the Docker Image
