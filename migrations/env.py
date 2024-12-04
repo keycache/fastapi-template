@@ -6,10 +6,17 @@ from sqlalchemy import pool
 from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
 
+from config import get_settings
 from db.database import Base
 from models.user import User  # noqa
 
+settings = get_settings()
+
 config = context.config
+
+# Set the SQLAlchemy URL in alembic
+config.set_main_option("sqlalchemy.url", settings.DATABASE_URL)
+
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
