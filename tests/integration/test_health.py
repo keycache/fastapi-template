@@ -6,7 +6,7 @@ from config import get_settings
 settings = get_settings()
 
 # Update this URL based on your deployment environment
-BASE_URL = "http://localhost:8000"
+BASE_URL = "http://api:8000"
 
 
 @pytest.mark.asyncio

@@ -77,3 +77,7 @@ docker-compose.override.yml
 # Local development settings
 *.local
 local_settings.py
+
+.data/
+data/
+.ruff_cache

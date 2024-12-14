@@ -1,0 +1,80 @@
+services:
+  api:
+    image: fastapi-template:latest
+    environment:
+    - DATABASE_URL=postgresql+asyncpg://postgres:postgres@test-db:5433/test_db
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./:/app/
+    networks:
+      - test-network
+
+  test-unit:
+    build:
+      context: .
+    image: ${TEST_IMAGE:-fastapi-template-test}
+    container_name: test-app-unit
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://postgres:postgres@test-db:5433/test_db
+      - ENVIRONMENT=test
+    depends_on:
+      - test-run-migrations
+      - api
+    volumes:
+      - .:/app
+    networks:
+      - test-network
+    command: bash -c "sleep 1s && pytest tests/unit -sv"
+  
+  test-integration:
+    build:
+      context: .
+    image: ${TEST_IMAGE:-fastapi-template-test}
+    container_name: test-app-integration
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://postgres:postgres@test-db:5433/test_db
+      - ENVIRONMENT=test
+    depends_on:
+      - test-run-migrations
+      - api
+    volumes:
+      - .:/app
+    networks:
+      - test-network
+    command: bash -c "sleep 1s && pytest tests/integration -sv"
+  
+  test-run-migrations:
+    build:
+      context: .
+    image: ${TEST_IMAGE:-fastapi-template-test}
+    container_name: test-run-migrations
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://postgres:postgres@test-db:5433/test_db
+      - ENVIRONMENT=test
+    depends_on:
+      - test-db
+    volumes:
+      - .:/app
+    networks:
+      - test-network
+    command: ["./scripts/wait_for_db.sh", "test-db", "alembic", "upgrade", "head"]
+
+  test-db:
+    image: postgres:15
+    container_name: test-postgres-db
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=test_db
+    ports:
+      - "5433:5432"  # Different port to avoid conflicts with dev database
+    volumes:
+      - ./data/test_db:/var/lib/postgresql/data
+    networks:
+      - test-network
+    
+
+networks:
+  test-network:
+    driver: bridge

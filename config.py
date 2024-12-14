@@ -7,14 +7,14 @@ from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
     # Database
-    DATABASE_URL: Optional[str] = "sqlite+aiosqlite:///./sql_app.db"
+    DATABASE_URL: str
     
     # API
     API_V1_STR: str = "/api/v1"
     
     class Config:
         case_sensitive = True
-        env_file = ".env"
+        # env_file = ".env"
 
 
 @lru_cache()
