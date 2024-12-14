@@ -81,3 +81,4 @@ local_settings.py
 .data/
 data/
 .ruff_cache
+*.db
